@@ -4,55 +4,61 @@ def solution(commands):
     cell = [['EMPTY' for _ in range(51)] for _ in range(51)]  
     # 셀 위치 확인용
     check = [[[i, j] for j in range(51)] for i in range(51)]
-    
-    def insert(r, c, v):
-        # check해서 위치 찾기
-        c_r, c_c = check[r][c] 
-        cell[c_r][c_c] = v
-        
-    def update(v1, v2):
-        for i in range(51):
-            for j in range(51):
-                if cell[i][j] == v1:
-                    cell[i][j] = v2
-                    
-    def merge(r1, c1, r2, c2):
-        c_r1, c_c1 = check[r1][c1]  # 1번 셀의 실제 위치
-        c_r2, c_c2 = check[r2][c2]  # 2번 셀의 실제 위치
-        value1, value2 = [cell[c_r1][c_c1], cell[c_r2][c_c2]]  # 각 셀 값을 가져옴
-        cell[c_r1][c_c1] = value2 if value1 == 'EMPTY' else value1  # 값 변경
-        for i in range(51):
-            for j in range(51):
-                if check[i][j] == [c_r2, c_c2]: # 2번 셀의 포인터를 1번 셀의 위치로 변경
-                    check[i][j] = [c_r1, c_c1]  
-        
-    def unmerge(r, c):
-        c_r, c_c = check[r][c]  # 실제 위치 가져옴
-        value = cell[c_r][c_c]  # 셀 값 가져옴
-        for i in range(51):
-            for j in range(51):
-                if check[i][j] == [c_r, c_c]:
-                    check[i][j] = [i, j]  # 포인터 초기화
-                    cell[i][j] = 'EMPTY'  # 값 초기화
-        cell[r][c] = value  # 원래 위치의 셀 값을 복원
-        
-    def pprint(r, c):
-        c_r, c_c = check[r][c]  # 포인터에서 실제 위치(rr, cc) 가져옴
-        answer.append(cell[c_r][c_c])  # 셀 값 결과 리스트에 추가
         
     # 메인 루프
     for i in commands:
-        a = i.split(' ')  # 공백을 기준으로 커맨드와 인자들을 분리
+        a = i.split(' ')  # 입력 하나씩 분리
+        
+        #1. 값 입력하기
         if a[0] == 'UPDATE':
             if len(a) == 4:
-                insert(int(a[1]), int(a[2]), a[3]) 
+                r = int(a[1])
+                c = int(a[2])
+                c_r, c_c = check[r][c]
+                cell[c_r][c_c] = a[3]
+        
+        # 2. 값1을 값2로 변경
             else:
-                update(a[1], a[2]) 
+                for i in range(51):
+                    for j in range(51):
+                        # 만약 값이 값1이면 해당 셀(i,j) 값을 값2로 변경
+                        if cell[i][j] == a[1]:
+                            cell[i][j] = a[2]
+        
+        # 3. 병합하기
         elif a[0] == 'MERGE':
-            merge(int(a[1]), int(a[2]), int(a[3]), int(a[4]))  
+            r1, c1 = int(a[1]), int(a[2])
+            r2, c2 = int(a[3]), int(a[4])
+            c_r1, c_c1 = check[r1][c1] # 셀1 위치 확인
+            c_r2, c_c2 = check[r2][c2] # 셀2 위치 확인
+            # 셀 값 가져오기
+            v1, v2 = cell[c_r1][c_c1], cell[c_r2][c_c2]
+            # 값 변경하기
+            cell[c_r1][c_c1] = v2 if v1 == 'EMPTY' else v1
+            for i in range(51):
+                for j in range(51):
+                    # 셀2의 위치를 셀1 위치로 변경
+                    if check[i][j] == [c_r2, c_c2]:
+                        check[i][j] = [c_r1, c_c1]
+                        
+        # 4. 병합 해제
         elif a[0] == 'UNMERGE':
-            unmerge(int(a[1]), int(a[2]))  
+            r, c = int(a[1]), int(a[2])
+            # 위치 확인
+            c_r, c_c = check[r][c]
+            v = cell[c_r][c_c]  # 셀 값 가져오기
+            for i in range(51):
+                for j in range(51):
+                    if check[i][j] == [c_r, c_c]:
+                        check[i][j] = [i, j]
+                        cell[i][j] = 'EMPTY'
+            cell[r][c] = v
+            
+        # 5. print하기
         else:
-            pprint(int(a[1]), int(a[2]))  
+            r, c = int(a[1]), int(a[2])
+            # r,c 위치 확인
+            c_r, c_c = check[r][c]
+            answer.append(cell[c_r][c_c])
             
     return answer
