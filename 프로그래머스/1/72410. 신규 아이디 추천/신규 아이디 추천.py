@@ -1,3 +1,12 @@
+'''
+- 아이디의 길이는 3 ~ 15
+- 알파벳 소문자, 숫자, 빼기(-), 밑줄(_), 마침표(.) 문자만 사용 가능
+    - 단, 마침표(.)는 처음과 끝에 사용할 수 없으며 또한 연속으로 사용할 수 없음
+
+- 단계별로 진행하면 쉽게 풀 수 있음 
+'''
+
+
 import re
 def solution(new_id):
     ## 네오의 아이디 추천 단계
@@ -8,7 +17,7 @@ def solution(new_id):
     pattern = r'[^a-z-_.0-9]'
     neo_id = re.sub(pattern, '', neo_id)
     
-    # 3단계 : .가 두번 반복되면 하나로 변경
+    # 3단계 : .가 연속되면 하나로 변경
     pattern = r'\.{2,}'
     replace = r'.'    
     neo_id = re.sub(pattern, replace, neo_id)
