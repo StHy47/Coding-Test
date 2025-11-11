@@ -37,3 +37,12 @@
 
  <p><code>check</code> 연산이 주어질때마다, 결과를 출력한다.</p>
 
+
+
+# 풀이 아이디어
+- DP 문제
+	- set()을 사용하여 중복 제거
+
+ ## 어려웠던 점
+ - input 으로 했더니 시간 초과가 발생 -> sys.stdin.readline로 해결
+ - sys.stdin.readline vs input
