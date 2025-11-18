@@ -1,3 +1,5 @@
+#### top-down 방식
+
 import sys
 input = sys.stdin.readline
 
@@ -22,4 +24,5 @@ def fibo(x):
 for _ in range(T):
     n = int(input()) 
     answer = fibo(n)
+
     print(f"{answer[0]} {answer[1]}")
